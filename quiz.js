@@ -1,4 +1,4 @@
-﻿const questions=[
+const questions=[
 
 {
 
@@ -1627,7 +1627,7 @@ function nextQuestion() {
 
         <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
           <button class="restart-btn" onclick="location.reload()">🔄 Reîncepe</button>
-          <button class="restart-btn" style="background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.2);" onclick="showMenu()">⬅ Meniu</button>
+          <button class="restart-btn" onclick="showMenu()">⬅ Meniu</button>
         </div>
       </div>
     `;
@@ -1650,5 +1650,35 @@ function shuffle(array) {
   }
 }
 
+// ─── Temă (dark / light) ─────────────────────────────────────────────────────
+function initTheme() {
+  const saved       = localStorage.getItem('quiz-theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const theme       = saved || (prefersDark ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', theme);
+  renderToggleBtn(theme);
+}
+
+function renderToggleBtn(theme) {
+  const old = document.getElementById('theme-toggle');
+  if (old) old.remove();
+  const btn    = document.createElement('button');
+  btn.id       = 'theme-toggle';
+  const isDark = theme === 'dark';
+  btn.innerHTML = `<span class="tt-icon">${isDark ? '☀️' : '🌙'}</span><span>${isDark ? 'Light' : 'Dark'}</span>`;
+  btn.title     = isDark ? 'Comută la modul luminos' : 'Comută la modul întunecat';
+  btn.onclick   = toggleTheme;
+  document.body.appendChild(btn);
+}
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme') || 'dark';
+  const next    = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('quiz-theme', next);
+  renderToggleBtn(next);
+}
+
 // ─── Boot ─────────────────────────────────────────────────────────────────────
-showMenu();
+initTheme();
+showMenu();
